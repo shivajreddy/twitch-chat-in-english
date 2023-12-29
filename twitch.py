@@ -3,6 +3,7 @@ from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.type import AuthScope, ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatSub, ChatCommand
 import asyncio
+import re
 
 from browser import translate_text, translate_text_2
 
@@ -11,7 +12,8 @@ APP_ID = 'i1rcrdwcobohu098fkcq0xqmxmgj26'
 APP_SECRET = '9az0xj99r5eee59iykhhomew4n31nv'
 
 # TARGET_CHANNEL = ['rostislav_999', 'w33haa', 'recrent']
-TARGET_CHANNEL = ['worick_4']
+# TARGET_CHANNEL = ['worick_4']
+TARGET_CHANNEL = ['recrent']
 # TARGET_CHANNEL = ['tpabomah']
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 USERNAME = 'shivajreddy',
@@ -25,13 +27,36 @@ async def on_ready(ready_event: EventData):
     await ready_event.chat.join_room(TARGET_CHANNEL)
 
 
+def extract_text_except_username(input_string):
+    # Define a regular expression pattern to match the username at the beginning
+    username_pattern = r'^@(\w+)\s?'
+
+    # Extract the username and cleaned text
+    match = re.match(username_pattern, input_string)
+
+    if match:
+        username = match.group(1)
+        cleaned_text = input_string[len(match.group(0)):].strip()
+    else:
+        username = None
+        cleaned_text = input_string.strip()
+
+    return username, cleaned_text
+
 # event handler when the channel gets a new message
+
+
 async def on_message(msg: ChatMessage):
     # print(f'{msg.user.name}: {msg.text}')
     # msg_in_english = translate_text(msg.text)
-    msg_in_english = translate_text_2(msg.text)
-    # print(f'converted: ${converted}')
-    print(f"{msg.user.name}: {msg_in_english}")
+    if msg.text[0] != "!":
+        if msg.text[0] == "@":
+            usr, msg_text = extract_text_except_username(msg.text)
+            msg_in_english = translate_text_2(msg_text)
+            print(f"{msg.user.name}: @{usr} {msg_in_english}")
+        else:
+            msg_in_english = translate_text_2(msg.text)
+            print(f"{msg.user.name}: {msg_in_english}")
 
 
 # set up the bot
