@@ -4,14 +4,15 @@ from twitchAPI.type import AuthScope, ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatSub, ChatCommand
 import asyncio
 
-from browser import translate_text
+from browser import translate_text, translate_text_2
 
 
 APP_ID = 'i1rcrdwcobohu098fkcq0xqmxmgj26'
 APP_SECRET = '9az0xj99r5eee59iykhhomew4n31nv'
 
-# TARGET_CHANNEL = ['rostislav_999', 'w33haa']
-TARGET_CHANNEL = ['recrent']
+# TARGET_CHANNEL = ['rostislav_999', 'w33haa', 'recrent']
+TARGET_CHANNEL = ['worick_4']
+# TARGET_CHANNEL = ['tpabomah']
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 USERNAME = 'shivajreddy',
 ACCESS_TOKEN = 'm29orn1hzua9uqekexdn22va36qawb'
@@ -27,7 +28,8 @@ async def on_ready(ready_event: EventData):
 # event handler when the channel gets a new message
 async def on_message(msg: ChatMessage):
     # print(f'{msg.user.name}: {msg.text}')
-    msg_in_english = translate_text(msg.text)
+    # msg_in_english = translate_text(msg.text)
+    msg_in_english = translate_text_2(msg.text)
     # print(f'converted: ${converted}')
     print(f"{msg.user.name}: {msg_in_english}")
 

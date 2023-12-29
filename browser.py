@@ -19,16 +19,48 @@ browser.get("https://www.google.com/search?q=russian+to+englinsh&oq=russia&gs_lc
 
 print('Browser::GoogleTranslate::Opened ✅')
 
-# time.sleep(10)
+
+def translate_text_2(input_text):
+    try:
+        # + Open Google Translate
+        browser.get(
+            "https://translate.google.com/?hl=en&sl=ru&tl=en&op=translate")
+
+        # + Find the input text box and enter the text
+        input_box = browser.find_element(By.CLASS_NAME, "er8xn")
+        input_box.clear()
+        input_box.send_keys(input_text)
+
+        # time.sleep(5)
+
+        # + Find the output span element that has the converted text
+        output_box = WebDriverWait(browser, 5).until(
+            EC.presence_of_element_located((By.CLASS_NAME, 'ryNqvb')))
+
+        result = None
+
+        # + Wait for the translation to be generated (Initial state:Translation, During: Translating...)
+        while True:
+            translate_text = output_box.text
+            if translate_text != "Translation" or translate_text != "Translating...":
+                result = translate_text
+                break
+
+        return result
+
+    except Exception as e:
+        e
+        # print(f"Error: ", e)
+
+    # finally:
+    #     browser.quit() # Close the browser window
 
 
 def translate_text(input_text):
 
     try:
         # + Open Google Translate
-        # driver.get("https://translate.google.com/")
-        # browser.get( "https://translate.google.com/?hl=en&sl=ru&tl=en&op=translate")
-        browser.get("https://www.google.com/search?q=russian+to+englinsh&oq=russia&gs_lcrp=EgZjaHJvbWUqBggAEEUYOzIGCAAQRRg7MgYIARBFGDkyBggCEEUYOzIGCAMQRRg9MgYIBBBFGD0yBggFEEUYPdIBCDM3OTNqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8")
+        # browser.get("https://www.google.com/search?q=russian+to+englinsh&oq=russia&gs_lcrp=EgZjaHJvbWUqBggAEEUYOzIGCAAQRRg7MgYIARBFGDkyBggCEEUYOzIGCAMQRRg9MgYIBBBFGD0yBggFEEUYPdIBCDM3OTNqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8")
 
         # + Find the input text box and enter the text
         input_box = browser.find_element(By.ID, 'tw-source-text-ta')
@@ -36,7 +68,7 @@ def translate_text(input_text):
         input_box.clear()
         input_box.send_keys(input_text)
 
-        # time.sleep(5)
+        time.sleep(5)
 
         # Wait for the translation to be generated
         output_box = WebDriverWait(browser, 10).until(
@@ -56,5 +88,6 @@ def translate_text(input_text):
 # # Example usage
 # input_text = "Привет, как дела"
 # output_text = translate_text(input_text)
+# output_text = translate_text_2(input_text)
 # print(f"Input Text: {input_text}")
 # print(f"Translated Text: {output_text}")
